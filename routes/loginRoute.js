@@ -1,5 +1,6 @@
 let express = require('express');
-
+const mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/test');
 const loginAPI = express.Router();
 
 loginAPI.get('/', (req, res) => {

@@ -1,0 +1,12 @@
+{
+	"App": {
+		"webServer": {
+			"protocol": "http",
+			"host": "localhost",
+			"port": 3000
+		}
+	},
+	"MongoDB": {
+		"connectionString": "mongodb://localhost:27017/notesapp"
+	}
+}

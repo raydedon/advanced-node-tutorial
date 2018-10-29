@@ -6,8 +6,26 @@ const morgan = require('morgan');
 const path = require('path');
 const ejs = require('ejs');
 const cookieParser = require('cookie-parser');
-let indexRouter = require('./routes/indexRoute');
-let loginRouter = require('./routes/loginRoute');
+const config = require('config');
+const mongoose = require('mongoose');
+
+const indexRouter = require('./routes/indexRoute');
+const loginRouter = require('./routes/loginRoute');
+const contactsRouter = require('./routes/contactsRoute');
+
+mongoose.Promise = global.Promise;
+
+// Connecting to the database
+mongoose.connect(config.get('MongoDB.connectionString'))
+	.then(() => {
+		console.log('Successfully connected to the database');
+	})
+	.catch(err => {
+		console.log(`Could not connect to the database. Exiting now...${err}`);
+		process.exit();
+	});
+
+
 
 let myLogger = (req, res, next) => {
 	console.log('LOGGED');
@@ -33,6 +51,7 @@ app.set('view engine', 'ejs');
 
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
+app.use('/contact', contactsRouter);
 
 app.use((req, res) => {
 	res.status(404).send('Page not found. Try another.');

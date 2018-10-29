@@ -7,6 +7,6 @@
 		}
 	},
 	"MongoDB": {
-		"connectionString": "mongodb://localhost:27017/notesapp"
+		"connectionString": "mongodb://localhost:27017/contactApp"
 	}
 }

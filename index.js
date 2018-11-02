@@ -1,4 +1,4 @@
-var createError = require('http-errors');
+const createError = require('http-errors');
 const express = require('express');
 const app = express();
 const url = require('url');
@@ -58,6 +58,6 @@ app.use((req, res) => {
 });
 
 app.listen(3000, (error) => {
-	console.log(`Server listening on port`);
+	console.log('Server listening on port');
 });
 

@@ -27,5 +27,5 @@ app.use((req, res, next) => {
 });
 
 app.listen(config.get('App.webServer.port'), (error) => {
-	console.log(`Server listening on port`);
+	console.log('Server listening on port');
 });

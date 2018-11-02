@@ -50,8 +50,8 @@ exports.readAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-	let {userName = '', } = req.params;
-	Contact.findOneAndUpdate({userName}, {$set: req.body})
+	let {userName = ''} = req.params;
+	Contact.findOneAndUpdate({userName}, {$set: {...req.body}}, {new: true, upsert:true})
 		.then(contacts => {
 			res.send(contacts);
 		})
@@ -61,7 +61,7 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-	let {userName = '', } = req.params;
+	let {userName = ''} = req.params;
 	Contact.findOneAndDelete({userName})
 		.then(contact => {
 			res.send(contact);

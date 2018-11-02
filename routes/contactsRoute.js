@@ -5,6 +5,8 @@ const contactsRouter = express.Router();
 
 contactsRouter.post('/', contact.create);
 
+contactsRouter.get('/', contact.readAll);
+
 contactsRouter.get('/:userName', contact.read);
 
 contactsRouter.put('/:userName', contact.update);

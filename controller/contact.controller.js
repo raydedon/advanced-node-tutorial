@@ -39,6 +39,16 @@ exports.read = (req, res) => {
 		});
 };
 
+exports.readAll = (req, res) => {
+	Contact.find()
+		.then(contacts => {
+			res.send(contacts);
+		})
+		.catch(err => {
+			res.status(500).send({message: err.message || 'Some error occurred while retrieving Contacts.'});
+		});
+};
+
 exports.update = (req, res) => {
 	let {userName = '', } = req.params;
 	Contact.findOneAndUpdate({userName}, {$set: req.body})

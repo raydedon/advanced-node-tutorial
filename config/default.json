@@ -4,7 +4,8 @@
 			"protocol": "http",
 			"host": "localhost",
 			"port": 3000
-		}
+		},
+		"isCluster": false
 	},
 	"MongoDB": {
 		"connectionString": "mongodb://localhost:27017/contactApp"

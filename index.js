@@ -10,9 +10,9 @@ const mongoose = require('mongoose');
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
-const indexRouter = require('./routes/indexRoute');
-const loginRouter = require('./routes/loginRoute');
-const contactsRouter = require('./routes/contactsRoute');
+const indexRouter = require('./server/routes/indexRoute');
+const loginRouter = require('./server/routes/loginRoute');
+const contactsRouter = require('./server/routes/contactsRoute');
 
 mongoose.Promise = global.Promise;
 

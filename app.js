@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const path = require('path');
 const ejs = require('ejs');
 const cookieParser = require('cookie-parser');
-const indexRouter = require('./routes/indexRoute');
+const indexRouter = require('./server/routes/indexRoute');
 const config = require('config');
 
 

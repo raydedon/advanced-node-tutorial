@@ -1,15 +1,19 @@
 const createError = require('http-errors');
+const flash = require('connect-flash');
 const express = require('express');
 const url = require('url');
 const morgan = require('morgan');
 const path = require('path');
 const ejs = require('ejs');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const config = require('config');
 const mongoose = require('mongoose');
 const cluster = require('cluster');
 const http = require('http');
 const numCPUs = require('os').cpus().length;
+const session    = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 const indexRouter = require('./server/routes/indexRoute');
 const loginRouter = require('./server/routes/loginRoute');
 const contactsRouter = require('./server/routes/contactsRoute');
@@ -17,13 +21,13 @@ const contactsRouter = require('./server/routes/contactsRoute');
 mongoose.Promise = global.Promise;
 
 // Connecting to the database
-mongoose.connect(config.get('MongoDB.connectionString'))
+mongoose.connect(config.get('MongoDB.connectionString'), { useNewUrlParser: true })
 	.then(() => {
 		console.log('Successfully connected to the database');
 	})
 	.catch(err => {
 		console.log(`Could not connect to the database. Exiting now...${err}`);
-		process.exit();
+		process.exit(0);
 	});
 
 if (cluster.isMaster && config.get('App.isCluster')) {
@@ -45,6 +49,8 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	});
 } else {
 	const app = express();
+	app.use(flash());
+
 
 	let myLogger = (req, res, next) => {
 		console.log('LOGGED');
@@ -61,12 +67,25 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	app.use(morgan('short'));
 	app.use(myLogger);
 	app.use(requestTime);
-	app.use(express.json());
-	app.use(express.urlencoded({extended: false}));
-	app.use(cookieParser());
-
-	app.set('views', path.join(__dirname, 'views'));
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(session({
+		secret: 'keyboard cat',
+		resave: false,
+		saveUninitialized: true,
+		cookie: { maxAge: 60000 }
+	}));
+	app.set('views', path.join(__dirname, 'server/views/pages'));
 	app.set('view engine', 'ejs');
+
+	app.use(require('node-sass-middleware')({
+		src: path.join(__dirname, 'public'),
+		dest: path.join(__dirname, 'public'),
+		indentedSyntax: true,
+		sourceMap: true
+	}));
+	// Setup public directory
+	app.use(express.static(path.join(__dirname, 'public')));
 
 	app.use('/', indexRouter);
 	app.use('/login', loginRouter);

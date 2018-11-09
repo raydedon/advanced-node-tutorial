@@ -14,9 +14,11 @@ const http = require('http');
 const numCPUs = require('os').cpus().length;
 const session    = require('express-session');
 const MongoStore = require('connect-mongo')(session);
+const passport = require('passport');
+require('./server/config/passport')(passport);
 const indexRouter = require('./server/routes/indexRoute');
 const loginRouter = require('./server/routes/loginRoute');
-const contactsRouter = require('./server/routes/contactsRoute');
+const usersRouter = require('./server/routes/usersRoute');
 
 mongoose.Promise = global.Promise;
 
@@ -29,6 +31,8 @@ mongoose.connect(config.get('MongoDB.connectionString'), { useNewUrlParser: true
 		console.log(`Could not connect to the database. Exiting now...${err}`);
 		process.exit(0);
 	});
+
+const db = mongoose.connection;
 
 if (cluster.isMaster && config.get('App.isCluster')) {
 	console.log(`Master ${process.pid} is running`);
@@ -49,8 +53,6 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	});
 } else {
 	const app = express();
-	app.use(flash());
-
 
 	let myLogger = (req, res, next) => {
 		console.log('LOGGED');
@@ -62,19 +64,6 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 		next();
 	};
 
-
-
-	app.use(morgan('short'));
-	app.use(myLogger);
-	app.use(requestTime);
-	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({ extended: false }));
-	app.use(session({
-		secret: 'keyboard cat',
-		resave: false,
-		saveUninitialized: true,
-		cookie: { maxAge: 60000 }
-	}));
 	app.set('views', path.join(__dirname, 'server/views/pages'));
 	app.set('view engine', 'ejs');
 
@@ -87,9 +76,25 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	// Setup public directory
 	app.use(express.static(path.join(__dirname, 'public')));
 
+	app.use(flash());
+	app.use(morgan('short'));
+	app.use(myLogger);
+	app.use(requestTime);
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(session({
+		secret: 'keyboard cat',
+		resave: false,
+		saveUninitialized: true,
+		cookie: { maxAge: 60000 },
+		store: new MongoStore({ mongooseConnection: db })
+	}));
+	app.use(passport.initialize());
+	app.use(passport.session());
+
 	app.use('/', indexRouter);
 	app.use('/login', loginRouter);
-	app.use('/contact', contactsRouter);
+	app.use('/user', usersRouter);
 
 	app.use((req, res) => {
 		res.status(404).send('Page not found. Try another.');

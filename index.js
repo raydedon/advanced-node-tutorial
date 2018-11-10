@@ -18,7 +18,9 @@ const passport = require('passport');
 require('./server/config/passport')(passport);
 const indexRouter = require('./server/routes/indexRoute');
 const loginRouter = require('./server/routes/loginRoute');
-const usersRouter = require('./server/routes/usersRoute');
+const usersApiRouter = require('./server/routes/usersApiRoute');
+const commentsRouter = require('./server/routes/commentsRoute');
+const commentsApiRouter = require('./server/routes/commentsApiRoute');
 
 mongoose.Promise = global.Promise;
 
@@ -96,7 +98,9 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	app.use(passport.session());
 
 	app.use('/', indexRouter);
-	app.use('/user', usersRouter);
+	app.use('/comments', commentsRouter);
+	app.use('/api/user', usersApiRouter);
+	app.use('/api/comments', commentsApiRouter);
 
 	app.use((req, res) => {
 		res.status(404).send('Page not found. Try another.');

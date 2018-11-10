@@ -52,13 +52,13 @@
         <hr>
         <div class="lead">
             <div class="list-group">
-            <% comments.forEach(function(comments){ %>
+            <% comments.forEach(function(comment){ %>
                     <a href="#" class="list-group-item">
-                        <img src="<%= gravatar %>" alt="" style="float: left; margin-right: 10px">
+                        <img src="<%= comment.user.gravatar %>" alt="" style="float: left; margin-right: 10px">
                         <div class="comments">
-                            <h4 class="list-group-item-heading"><%= comments.title %></h4>
-                            <p class="list-group-item-text"><%= comments.content %></p>
-                            <small class="text-muted">By: <%= comments.user.local.email %></small>
+                            <h4 class="list-group-item-heading"><%= comment.title %></h4>
+                            <p class="list-group-item-text"><%= comment.content %></p>
+                            <small class="text-muted">By: <%= comment.user.email %></small>
                         </div>
                     </a>
 

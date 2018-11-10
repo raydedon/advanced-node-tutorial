@@ -39,11 +39,7 @@ indexRouter.post('/signup', passport.authenticate('local-signup', {
 
 indexRouter.get('/profile', isLoggedIn, function(req, res, next) {
 	console.info(`session: ${JSON.stringify(req.session, null, 4)}`);
-	res.render('profile', { title: 'Profile', message: 'View profiles', user : req.user, avatar: gravatar.url(req.user.email ,  {s: '100', r: 'x', d: 'retro'}, true) });
-});
-
-indexRouter.get('/comments', function(req, res, next) {
-	res.render('comments', { title: 'Comments', message: 'Please put your comments below' });
+	res.render('profile', { title: 'Profile', message: 'View profiles', user : req.user, avatar: gravatar.url(req.user.email, {s: '100', r: 'x', d: 'retro'}, true) });
 });
 
 function isLoggedIn(req, res, next) {

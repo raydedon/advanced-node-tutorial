@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const gravatar = require('gravatar');
 const saltRounds = 10;
 const Schema = mongoose.Schema;
 
@@ -13,6 +14,10 @@ const userSchema = new Schema({
 	country: String,
 	state: String,
 	pinCode: String
+});
+
+userSchema.virtual('gravatar').get(function() {
+	return gravatar.url(this.email ,  {s: '80', r: 'x', d: 'retro'}, true);
 });
 
 // Encrypt Password

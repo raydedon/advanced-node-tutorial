@@ -16,7 +16,7 @@ const userSchema = new Schema({
 });
 
 // Encrypt Password
-userSchema.methods.generateHash = function(password) {
+userSchema.statics.generateHash = function(password) {
 	return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 

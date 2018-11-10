@@ -14,6 +14,8 @@ module.exports = function(passport) {
 	});
 
 	passport.use('local-login', new LocalStrategy({
+			usernameField : 'userName',
+			passwordField : 'password',
 			passReqToCallback : true
 		},
 		function(req, userName, password, done) {
@@ -39,6 +41,8 @@ module.exports = function(passport) {
 		}));
 	// Signup local strategy
 	passport.use('local-signup', new LocalStrategy({
+			usernameField : 'userName',
+			passwordField : 'password',
 			passReqToCallback : true
 		},
 		function(req, userName, password, done) {
@@ -58,11 +62,19 @@ module.exports = function(passport) {
 							return done(null, false, req.flash('signupMessage', 'Wohh! the userName is already taken.'));
 						} else {
 							// create the user
-							var newUser = new User();
-							// Get user name from req.body
-							newUser.name = req.body.name;
-							newUser.userName = userName;
-							newUser.password = newUser.generateHash(password);
+							let {
+								name = '',
+								phoneNumber = '',
+								email = '',
+								userName = '',
+								password = '',
+								gender = 0,
+								country = '',
+								state = '',
+								pinCode = ''
+							} = req.body;
+							const newUser = new User({name, phoneNumber, email, userName, password: User.generateHash(password), gender, country, state, pinCode});
+
 							// save data
 							newUser.save(function(err) {
 								if (err)

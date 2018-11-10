@@ -80,12 +80,15 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	app.use(morgan('short'));
 	app.use(myLogger);
 	app.use(requestTime);
+
+	app.use(cookieParser());
 	app.use(bodyParser.json());
-	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(bodyParser.urlencoded({ extended: true }));
+
 	app.use(session({
 		secret: 'keyboard cat',
 		resave: false,
-		saveUninitialized: true,
+		saveUninitialized: false,
 		cookie: { maxAge: 60000 },
 		store: new MongoStore({ mongooseConnection: db })
 	}));
@@ -93,7 +96,6 @@ if (cluster.isMaster && config.get('App.isCluster')) {
 	app.use(passport.session());
 
 	app.use('/', indexRouter);
-	app.use('/login', loginRouter);
 	app.use('/user', usersRouter);
 
 	app.use((req, res) => {

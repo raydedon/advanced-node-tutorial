@@ -1,6 +1,10 @@
 const express = require('express');
 const passport = require('passport');
 const gravatar = require('gravatar');
+const multer  = require('multer');
+const upload = multer({ dest:'./public/uploads/', limits: {files:1} });
+const images  = require('../controller/images.controller');
+const videos  = require('../controller/videos.controller');
 
 const indexRouter = express.Router();
 
@@ -41,6 +45,16 @@ indexRouter.get('/profile', isLoggedIn, function(req, res, next) {
 	console.info(`session: ${JSON.stringify(req.session, null, 4)}`);
 	res.render('profile', { title: 'Profile', message: 'View profiles', user : req.user, avatar: gravatar.url(req.user.email, {s: '100', r: 'x', d: 'retro'}, true) });
 });
+
+// Setup routes for videos
+indexRouter.get('/videos', videos.hasAuthorization, videos.show);
+indexRouter.post('/videos', videos.hasAuthorization, upload.single('video'), videos.uploadVideo);
+
+// Setup routes for images
+indexRouter.get('/images-gallery', images.hasAuthorization, images.show);
+indexRouter.post('/images', images.hasAuthorization, upload.single('image'), images.uploadImage);
+
+
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())

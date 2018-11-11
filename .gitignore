@@ -64,3 +64,6 @@ typings/
 
 /.idea/
 /node_modules/
+/public/uploads/
+/public/images/
+/public/videos/

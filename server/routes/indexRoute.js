@@ -63,9 +63,11 @@ function isLoggedIn(req, res, next) {
 }
 
 function preventNextIfLoggedIn(req, res, next) {
-	if (req.isAuthenticated())
+	if (req.isAuthenticated()) {
 		res.redirect('/profile');
-	next();
+	} else {
+		next();
+	}
 }
 
 /* GET Logout Page */
